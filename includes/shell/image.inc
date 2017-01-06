@@ -35,13 +35,13 @@ image_cmd:
 	;Load color
 	cmp byte [si], 0xF0					; Is 0xF0?
 	je .done						; If yes, done
-	mov byte [si],dl
+	mov dl,byte [si]
 	inc si
 	;X Position
-	mov byte [si],ch
+	mov ch,byte [si]
 	inc si
 	;Y Position
-	mov byte [si],cl
+	mov cl,byte [si]
 	
 	push 0x81						;Draw pixel
 	int 0x80
