@@ -10,17 +10,46 @@ image_cmd:
 	mov ax, word [CatBuffer]
 	mov es, ax
 	xor bx, bx
-	mov dx,es
+
+	push 0x12			; Load file into buffer
+	int 0x80
 	pop es
-	
+
+	test dl, dl			; Check for failure
+	jnz .failure
+
+	mov bx, cx
+
+	push ds
+	mov ax, word [CatBuffer]
+	mov ds, ax
+
+	mov byte [bx], 0xF0	; Add terminator to the file
+	xor si, si
+	push ax
 	push 0x80		; Enter graphics mode
 	int 0x80
 	
-	push 0x84	
-	int 0x80			;Draw PCX file
-   ;jc .falure          ; Exit if open failed
+
+.loop:
+	;Load color
+	cmp byte [si], 0xF0					; Is 0xF0?
+	je .done						; If yes, done
+	mov dl,byte [si]
+	inc si
+	;X Position
+	mov ch,byte [si]
+	inc si
+	;Y Position
+	mov cl,byte [si]
 	
+	push 0x81						;Draw pixel
+	int 0x80
+	inc si
+	jmp .loop
 	
+.done:
+	pop ax
 	pop ds
 	push 0x18		; Pause
 	int 0x80
@@ -37,7 +66,7 @@ image_cmd:
 	jmp prompt_loop
 
 .failure:
-	pop es
+
 	mov si, .failure_msg
 	push 0x02
 	int 0x80
