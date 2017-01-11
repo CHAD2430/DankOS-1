@@ -13,6 +13,17 @@ mov si, intro					; Print intro
 push 0x02
 int 0x80
 
+;Play a little startup tune because -- why not.
+;mov bx,3
+;mov ax,1000
+;push 0x22
+;int 0x80
+
+;mov bx,3
+;mov ax,1250
+;push 0x22
+;int 0x80
+;---------------------------------------------------
 prompt_loop:
 
 mov di, CurrentDir
@@ -173,6 +184,18 @@ invalid_command:
 mov si, not_found
 push 0x02
 int 0x80
+mov bx,3
+
+;Respond with two beeps
+mov ax,1000
+push 0x22
+int 0x80
+
+mov bx,3
+mov ax,1250
+push 0x22
+int 0x80
+
 jmp prompt_loop
 
 data:
